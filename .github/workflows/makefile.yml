@@ -13,15 +13,20 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Check the Makefile
+    - name: Check Makefile
       run: |
         if [ ! -f Makefile ]; then
-          echo "Makefile is not found"
+          echo "Makefile not found"
           exit 1
         fi
 
     - name: Display help
       run: make help
+
+    - name: Setup Git user
+      run: |
+        git config --global user.email "github-actions@github.com"
+        git config --global user.name "GitHub Actions"
 
     - name: Setup test environment
       run: |
