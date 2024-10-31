@@ -32,7 +32,7 @@ jobs:
       run: |
         mkdir -p modules
         git submodule add https://github.com/octocat/Hello-World.git modules/test-module-1
-        git submodule add https://github.com/octocat/Spoon-Knife.git modules/test-module-2
+        git submodule add https://github.com/octocat/Hello-World.git modules/test-module-2
         git submodule init
         git submodule update
 
@@ -45,6 +45,6 @@ jobs:
     - name: Test with custom MODULES_DIR
       run: |
         mkdir -p custom_modules
-        git submodule add https://github.com/octocat/git-consortium.git custom_modules/test-module-3
+        git submodule add https://github.com/octocat/Hello-World.git custom_modules/test-module-3
         make update-all MODULES_DIR=custom_modules
         make init-update MODULES_DIR=custom_modules
