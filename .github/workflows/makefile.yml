@@ -1,0 +1,58 @@
+name: Test Makefile for update git modules
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Check the Makefile
+      run: |
+        if [ ! -f Makefile ]; then
+          echo "Makefile is not found"
+          exit 1
+        fi
+
+    - name: Display help
+      run: make help
+
+    - name: Setup test environment
+      run: |
+        mkdir -p modules
+        # Create dummy git repositories as submodules
+        git init modules/test-module-1
+        git init modules/test-module-2
+        touch modules/test-module-1/dummy.txt
+        touch modules/test-module-2/dummy.txt
+        cd modules/test-module-1
+        git add . && git commit -m "Initial commit"
+        cd ../test-module-2
+        git add . && git commit -m "Initial commit"
+        cd ../..
+        git submodule add ./modules/test-module-1
+        git submodule add ./modules/test-module-2
+
+    - name: Test update-all
+      run: make update-all
+
+    - name: Test init-update
+      run: make init-update
+
+    - name: Test with custom MODULES_DIR
+      run: |
+        mkdir -p custom_modules
+        git init custom_modules/test-module-3
+        touch custom_modules/test-module-3/dummy.txt
+        cd custom_modules/test-module-3
+        git add . && git commit -m "Initial commit"
+        cd ../..
+        git submodule add ./custom_modules/test-module-3
+        make update-all MODULES_DIR=custom_modules
+        make init-update MODULES_DIR=custom_modules
